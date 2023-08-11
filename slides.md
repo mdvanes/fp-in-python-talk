@@ -6,11 +6,11 @@ Codestar ✕ Pythoneers R&D Hackathon
 
 ---
 
-- Is Python multi paradigm? (probably)
-- Are functions a first class citizen? (lambda expressions?)
+- Is Python multi-paradigm? (probably)
+- Are functions first class citizens? (lambda expressions?)
 - How do some of the functional operators work?
 - Where to get immutable data structures?
-- Do we want to use Coconuts? [coconut-lang.org](coconut-lang.org)
+- Do we want to use Coconut? [coconut-lang.org](coconut-lang.org)
 
 Note: 
 
@@ -91,7 +91,7 @@ pure
 
 ```python
 def add(x, y):
-    return x + y;
+    return x + y
 ```
 
 ---
@@ -121,7 +121,7 @@ Mathematically Provable (Kyle Simpson): if a lot of your code is mathematically 
 heroes = ["Dent", "Prefect"]
 
 def add_hero(h):
-    heroes.append(h)
+    heroes.append(h)
 
 add_hero("Marvin")
 ```
@@ -147,6 +147,17 @@ addHero("Marvin");
 ---
 
 functional style:
+
+```python
+heroes = ["Dent", "Prefect"]
+
+def add_hero(hs, h):
+    return hs + [h]
+
+new_heroes = add_hero(heroes, "Marvin")
+```
+
+Note:
 
 ```python
 heroes = ["Dent", "Prefect"]
