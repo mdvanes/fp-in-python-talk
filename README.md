@@ -1,0 +1,1 @@
+npx reveal-md slides.md
