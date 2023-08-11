@@ -148,20 +148,24 @@ addHero("Marvin");
 
 functional style:
 
-```typescript
-type Heroes = readonly string[];
-const heroes: Heroes = ["Dent", "Prefect"];
+```python
+heroes = ["Dent", "Prefect"]
 
-const addHero = (hs: Heroes, h: string) => {
-  return [...hs, h];
-}
+def add_hero(hs, h):
+    new_hs = hs.copy()
+    new_hs.append(h)
+    return new_hs
 
-const newHeroes: Heroes = addHero(heroes, "Marvin");
+new_heroes = add_hero(heroes, "Marvin")
+
+print(heroes, new_heroes)
 ```
 
 ---
 
 The End
+
+---
 
 ---
 
