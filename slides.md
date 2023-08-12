@@ -37,7 +37,7 @@ Note: But first, why do we want FP?
 not pure (non deterministic)
 
 ```python
-def add_random(x):
+def add_random(x: int) -> int:
     return x + random.random()
 ```
 
@@ -46,7 +46,7 @@ Note:
 ```python
 import random
 
-def add_random(x):
+def add_random(x: int) -> int:
     return x + random.random()
 
 print(add_random(3))
@@ -58,11 +58,11 @@ not pure (deterministic, but side effect)
 
 
 ```python
-thisdict = {
+thisdict: dict[str, int] = {
   "z": 0
 }
 
-def add(x, y):
+def add(x: int, y: int) -> int:
     sum = x + y;
     thisdict["z"] = sum
     return sum
@@ -73,11 +73,11 @@ Note:
 ```python
 import random
 
-thisdict = {
+thisdict: dict[str, int] = {
   "z": 0
 }
 
-def add(x, y):
+def add(x: int, y: int) -> int:
     sum = x + y;
     thisdict["z"] = sum
     return sum
@@ -90,7 +90,7 @@ print(add(3, 2), thisdict["z"])
 pure
 
 ```python
-def add(x, y):
+def add(x: int, y: int) -> int:
     return x + y
 ```
 
@@ -98,10 +98,11 @@ def add(x, y):
 
 Compare math:
 
-```
-f(x) = 2 * x ^2 + 3
+$$ f(x) = 2x ^2 + 3 $$
 
-def f(x):
+
+```python
+def f(x: int) -> int:
     return 2 * pow(x, 2) + 3;
 ```
 
