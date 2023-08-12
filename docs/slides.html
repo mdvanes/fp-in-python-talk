@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>reveal-md</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./dist/reset.css" />
+    <link rel="stylesheet" href="./dist/reveal.css" />
+    <link rel="stylesheet" href="./dist/theme/black.css" id="theme" />
+    <link rel="stylesheet" href="./css/highlight/base16/zenburn.css" />
+
+
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><section  data-markdown><script type="text/template"># FP in Python
+
+Codestar ✕ Pythoneers R&D Hackathon
+
+11 aug 2023
+</script></section><section  data-markdown><script type="text/template">
+- Is Python multi-paradigm? (probably)
+- Are functions first class citizens? (lambda expressions?)
+- How do some of the functional operators work?
+- Where to get immutable data structures?
+- Do we want to use Coconut? [coconut-lang.org](coconut-lang.org)
+
+<aside class="notes"><p>Why &quot;Functional Operators&quot; and not FP? Because FO is 2 hours and FP is a CS degree...</p>
+<p>Goals for today, find out:</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+## Pure functions
+
+- deterministic
+- no side effects
+
+> Pure functions help prevent runtime errors and are transparent and easily testable.
+
+<aside class="notes"><p>But first, why do we want FP?</p>
+<ul>
+<li>deterministic (&quot;predictable&quot;, argument -&gt; return value)</li>
+<li>no side effects (side effects e.g. DOM, console, mutate global)</li>
+</ul>
+</aside></script></section><section  data-markdown><script type="text/template">
+not pure (non deterministic)
+
+```python
+def add_random(x: int) -> int:
+    return x + random.random()
+```
+
+<aside class="notes"><pre><code class="language-python">import random
+
+def add_random(x: int) -&gt; int:
+    return x + random.random()
+
+print(add_random(3))
+</code></pre>
+</aside></script></section><section  data-markdown><script type="text/template">
+not pure (deterministic, but side effect)
+
+
+```python
+thisdict: dict[str, int] = {
+  "z": 0
+}
+
+def add(x: int, y: int) -> int:
+    sum = x + y;
+    thisdict["z"] = sum
+    return sum
+```
+
+<aside class="notes"><pre><code class="language-python">import random
+
+thisdict: dict[str, int] = {
+  &quot;z&quot;: 0
+}
+
+def add(x: int, y: int) -&gt; int:
+    sum = x + y;
+    thisdict[&quot;z&quot;] = sum
+    return sum
+
+print(add(3, 2), thisdict[&quot;z&quot;])
+</code></pre>
+</aside></script></section><section  data-markdown><script type="text/template">
+pure
+
+```python
+def add(x: int, y: int) -> int:
+    return x + y
+```
+</script></section><section  data-markdown><script type="text/template">
+Compare math:
+
+$$ f(x) = 2x ^2 + 3 $$
+
+
+```python
+def f(x: int) -> int:
+    return 2 * pow(x, 2) + 3;
+```
+
+<aside class="notes"><p>Pure functions can improve readability: they should be concise, high cohesion. </p>
+<p>Mathematically Provable (Kyle Simpson): if a lot of your code is mathematically provable, you have less code to worry about.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+
+
+## Immutability
+
+```python
+heroes = ["Dent", "Prefect"]
+
+def add_hero(h):
+    heroes.append(h)
+
+add_hero("Marvin")
+```
+
+<aside class="notes"><p>help prevent side effects (mutate global)</p>
+<p>take:</p>
+<!-- this is `const`, but can be mutated. The value of `heroes` has now changed on the global scope, not just in `addHero`!
+
+```typescript
+const heroes: readonly string[] = ["Dent", "Prefect"];
+
+const addHero = (h: string) => {
+  heroes.push(h); // not allowed
+}
+
+addHero("Marvin");
+``` --></aside></script></section><section  data-markdown><script type="text/template">
+functional style:
+
+```python
+heroes = ["Dent", "Prefect"]
+
+def add_hero(hs, h):
+    return hs + [h]
+
+new_heroes = add_hero(heroes, "Marvin")
+```
+
+<aside class="notes"><pre><code class="language-python">heroes = [&quot;Dent&quot;, &quot;Prefect&quot;]
+
+def add_hero(hs, h):
+    new_hs = hs.copy()
+    new_hs.append(h)
+    return new_hs
+
+new_heroes = add_hero(heroes, &quot;Marvin&quot;)
+
+print(heroes, new_heroes)
+</code></pre>
+</aside></script></section><section  data-markdown><script type="text/template">
+The End
+</script></section><section  data-markdown><script type="text/template"></script></section><section  data-markdown><script type="text/template">
+TODO rewrite examples to python
+
+
+Spread operator: `[...hs, h]` does `[hs[0], hs[1], h];`
+Copy vs mutate.
+
+Similar for objects:
+
+```typescript
+interface Hero {
+  readonly name: string;
+}
+
+const dent: Hero = {
+  name: "Dent"
+}
+
+const updateName = (h: Hero, n: string) => {
+  // Can't mutate:
+  // h.name = n;
+  // return h;
+  return {
+    ...h,
+    name: n
+  }
+}
+
+const newDent = updateName(dent, "Arthur");
+```
+
+ImmutableJS
+
+More about immutability: [https://github.com/immutable-js/immutable-js/blob/master/README.md#the-case-for-immutability](https://github.com/immutable-js/immutable-js/blob/master/README.md#the-case-for-immutability)
+
+## Iteration
+
+iterable objects: 
+    * string: `const x = "123";` 
+    * array:  `const x = [1, 2, 3];`
+    * array-like objects: e.g. NodeList `const x = document.querySelectorAll('div');`
+    * Map, Set: `const x = new Set([1,2,3]);`
+
+`for` [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)
+
+```typescript
+const str = "123";
+for (let i = 0; i < str.length; i++) {
+    console.log(str[i]);
+}
+```
+
+Same for array, but not for Set, because it has no "get by index".
+
+You can convert to array: `Array.from(new Set([1,2,3]))`
+
+## Get the square of each item in an array
+
+What is wrong with?
+
+```typescript
+const sourceArr = [1,2,3];
+const squareArr = [];
+for( const item of sourceArr ) {
+    squareArr.push(item * item);
+}
+console.log(squareArr);
+```
+
+Mutability of squareArr.
+
+Using .forEach would not solve this. Exercise: Implement in forEach to show why.
+
+## map operator (the first functional operator)
+
+Imperative (how) vs Declarative (what), readability because the function will describe what will be the result instead
+of how it is obtained.
+
+```typescript
+const sourceArr = [1,2,3];
+
+const mapSquare = (arr) => {
+    const squareArr = [];
+    for( const item of arr ) {
+        squareArr.push(item * item);
+    }
+    return squareArr;
+}
+
+console.log(mapSquare(sourceArr));
+```
+
+More abstract
+
+```typescript
+const sourceArr = [1,2,3];
+
+const map = (arr, fn) => {
+    const resultArr = [];
+    for( const item of sourceArr ) {
+        resultArr.push(fn(item));
+    }
+    return resultArr;
+}
+
+const square = item => item * item;
+
+console.log(map(sourceArr, square));
+```
+
+<aside class="notes"><ul>
+<li>returns a value, unlike the imperative for loop</li>
+<li><code>square</code> is a HOF!</li>
+<li><code>square</code> is pure and trivial to unit test</li>
+</ul>
+<p>Underscore, LoDash, ES6: <code>.map</code></p>
+<pre><code class="language-typescript">const sourceArr = [1,2,3];
+const square = item =&gt; item * item;
+console.log(sourceArr.map(x =&gt; square(x)));
+</code></pre>
+<p>Can be written in point free (ish) / equational reasoning style as:</p>
+<pre><code class="language-typescript">console.log(sourceArr.map(square));
+</code></pre>
+<p>typed:</p>
+<pre><code class="language-typescript">const sourceArr: number[] = [1, 2, 3];
+const square = (item: number): number =&gt; item * item;
+console.log(sourceArr.map&lt;number&gt;(square));
+</code></pre>
+</aside></script></section></div>
+    </div>
+
+    <script src="./dist/reveal.js"></script>
+
+    <script src="./plugin/markdown/markdown.js"></script>
+    <script src="./plugin/highlight/highlight.js"></script>
+    <script src="./plugin/zoom/zoom.js"></script>
+    <script src="./plugin/notes/notes.js"></script>
+    <script src="./plugin/math/math.js"></script>
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        slideNumber: true,
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath
+        ]
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {}, queryOptions);
+    </script>
+
+
+    <script>
+      Reveal.initialize(options);
+    </script>
+  </body>
+</html>
